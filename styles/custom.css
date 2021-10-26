@@ -1,0 +1,41 @@
+html, body, #__next {
+  height: 100%;
+}
+
+.below-canvas {
+  @apply z-[-5];
+}
+
+.above-canvas {
+  @apply z-[5];
+}
+
+.w-fit-content {
+  width: fit-content;
+}
+
+.h-fit-content {
+  height: fit-content;
+}
+
+.h-screen-responsive {
+  height: calc(100vh - calc(100vh - 100%));
+}
+
+.full-screen-absolute {
+  @apply absolute inset-0 w-screen;
+  height: calc(100vh - calc(100vh - 100%));
+}
+
+.full-screen {
+  @apply w-screen;
+  height: calc(100vh - calc(100vh - 100%));
+}
+
+.tp-dfwv {
+  @apply z-[999];
+}
+
+.drawer-content {
+  z-index: auto !important;
+}
