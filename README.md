@@ -1,3 +1,4 @@
-# TypeScript Next.js example
+# Picross 3D
 
-This is a template project that uses Next.js, TypeScript, react-three-fiber and TailwindCSS.
+Picross, but 3D.
+This project uses Next.js, TypeScript, react-three-fiber and TailwindCSS.
