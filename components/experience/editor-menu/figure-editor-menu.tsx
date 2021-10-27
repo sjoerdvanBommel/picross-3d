@@ -1,18 +1,52 @@
+import Link from "next/link";
 import React from "react";
+import { FaFlagCheckered, FaHammer, FaPalette, FaTrash } from "react-icons/fa";
+import { useExperienceContext } from "../ExperienceProvider";
 import { ActionButton, ActionButtonColor } from "./action-button";
+import { FigureEditorAction } from "./FigureEditorAction";
 
-interface IFigureEditorMenuProps {
-  onChangeEditor: () => void;
-}
+const FigureEditorMenu = () => {
+  const { activeFigureAction, setActiveFigureAction } = useExperienceContext();
 
-const FigureEditorMenu = ({ onChangeEditor }: IFigureEditorMenuProps) => {
+  const setBuilding = () => setActiveFigureAction(FigureEditorAction.BUILDING);
+  const setDestroying = () => setActiveFigureAction(FigureEditorAction.DESTROYING);
+  const setCustomizing = () => setActiveFigureAction(FigureEditorAction.CUSTOMIZING);
 
-  return <>
-    <ActionButton active={true} color={ActionButtonColor.Green} icon="hammer" mouseIcon={""} onClick={() => { }} />
-    <ActionButton active={false} color={ActionButtonColor.Red} icon="trash" mouseIcon={""} onClick={() => { }} />
-    <ActionButton active={false} color={ActionButtonColor.Blue} icon="palette" mouseIcon={""} onClick={() => { }} />
-    <ActionButton active={false} color={ActionButtonColor.Gray} icon="flag-checkered" onClick={onChangeEditor} />
-  </>;
+  return <aside className="editor-menu">
+    <div className="editor-sub-menu">
+      <ActionButton
+        active={activeFigureAction === FigureEditorAction.BUILDING}
+        color={ActionButtonColor.Green}
+        icon={<FaHammer className="action-icon-button" />}
+        mouseIcon={activeFigureAction.getMouseIcon(FigureEditorAction.BUILDING)}
+        onClick={setBuilding}
+      />
+      <ActionButton
+        active={activeFigureAction === FigureEditorAction.DESTROYING}
+        color={ActionButtonColor.Red}
+        icon={<FaTrash className="action-icon-button" />}
+        mouseIcon={activeFigureAction.getMouseIcon(FigureEditorAction.DESTROYING)}
+        onClick={setDestroying}
+      />
+      <ActionButton
+        active={activeFigureAction === FigureEditorAction.CUSTOMIZING}
+        color={ActionButtonColor.Blue}
+        icon={<FaPalette className="action-icon-button" />}
+        mouseIcon={activeFigureAction.getMouseIcon(FigureEditorAction.CUSTOMIZING)}
+        onClick={setCustomizing}
+      />
+    </div>
+    <div className="editor-sub-menu justify-end">
+      <Link href="/edit-puzzle">
+        <ActionButton
+          active={false}
+          color={ActionButtonColor.Gray}
+          icon={<FaFlagCheckered className="action-icon-button" />}
+          onClick={() => { }}
+        />
+      </Link>
+    </div>
+  </aside>;
 };
 
 export default FigureEditorMenu;

@@ -3,8 +3,8 @@ import { FaBars } from 'react-icons/fa'
 
 const Sidebar = () => {
   return (
-    <div className="w-full h-screen">
-      <div className="rounded-lg shadow drawer h-screen">
+    <div className="absolute w-full h-screen-responsive">
+      <div className="rounded-lg shadow drawer h-screen-responsive">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="flex drawer-content m-8 h-fit-content">
           <label htmlFor="my-drawer" className="btn btn-circle above-canvas">

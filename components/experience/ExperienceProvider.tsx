@@ -1,17 +1,37 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { FigureEditorAction } from './editor-menu/FigureEditorAction';
+import { PuzzleEditorAction } from './editor-menu/PuzzleEditorAction';
 
-const DebugContext = createContext(false);
-const SetDebugContext = createContext((_: boolean) => { });
+export interface IExperienceContextProps {
+  debug: boolean,
+  setDebug: (_: boolean) => void,
+  activeFigureAction: FigureEditorAction,
+  setActiveFigureAction: (_: FigureEditorAction) => void,
+  activePuzzleAction: PuzzleEditorAction,
+  setActivePuzzleAction: (_: PuzzleEditorAction) => void,
+}
 
-export const useDebug = () => useContext(DebugContext);
-export const useSetDebug = () => useContext(SetDebugContext);
+export const defaultValues = {
+  debug: false,
+  setDebug: (_: boolean) => { },
+  activeFigureAction: FigureEditorAction.BUILDING,
+  setActiveFigureAction: (_: FigureEditorAction) => { },
+  activePuzzleAction: PuzzleEditorAction.ADDING_NUMBERS,
+  setActivePuzzleAction: (_: PuzzleEditorAction) => { },
+}
+
+const ExperienceContext = createContext<IExperienceContextProps>(defaultValues);
+
+export const useExperienceContext = () => useContext(ExperienceContext);
 
 type Props = {
-  children: JSX.Element
+  children: JSX.Element | JSX.Element[]
 }
 
 const ExperienceProvider = ({ children }: Props) => {
   const [debug, setDebug] = useState(false);
+  const [activeFigureAction, setActiveFigureAction] = useState(FigureEditorAction.BUILDING);
+  const [activePuzzleAction, setActivePuzzleAction] = useState(PuzzleEditorAction.ADDING_NUMBERS);
 
   useEffect(() => {
     setDebug(window.location.hash === '#debug');
@@ -22,11 +42,9 @@ const ExperienceProvider = ({ children }: Props) => {
   }, []);
 
   return (
-    <DebugContext.Provider value={debug}>
-      <SetDebugContext.Provider value={setDebug}>
-        {children}
-      </SetDebugContext.Provider>
-    </DebugContext.Provider>
+    <ExperienceContext.Provider value={{ debug, setDebug, activeFigureAction: activeFigureAction, setActiveFigureAction, activePuzzleAction, setActivePuzzleAction }}>
+      {children}
+    </ExperienceContext.Provider>
   )
 }
 

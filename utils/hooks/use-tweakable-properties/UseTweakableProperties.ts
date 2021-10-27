@@ -1,5 +1,5 @@
-import { useExperienceDebug } from "@components/experience/ExperienceCanvas";
-import { useDebug } from "@components/experience/ExperienceProvider";
+import { useBridgedExperienceContext } from "@components/experience/ExperienceCanvas";
+import { useExperienceContext } from "@components/experience/ExperienceProvider";
 import { useEffect, useState } from "react";
 import { Pane, TpChangeEvent } from "tweakpane";
 import { ITweakableProperties } from "./ITweakableProperties";
@@ -12,9 +12,9 @@ export const useTweakableProperties = <T extends ITweakableProperties>(propertie
 
   let debug: boolean;
   if (bridged === true) {
-    debug = useExperienceDebug();
+    debug = useBridgedExperienceContext().debug;
   } else {
-    debug = useDebug();
+    debug = useExperienceContext().debug;
   }
 
   useEffect(() => {
