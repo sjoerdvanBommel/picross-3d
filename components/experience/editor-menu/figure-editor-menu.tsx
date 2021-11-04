@@ -22,28 +22,30 @@ const FigureEditorMenu = () => {
         onClick={setBuilding}
       />
       <ActionButton
-        active={activeFigureAction === FigureEditorAction.DESTROYING}
-        color={ActionButtonColor.Red}
-        icon={<FaTrash className="action-icon-button" />}
-        mouseIcon={activeFigureAction.getMouseIcon(FigureEditorAction.DESTROYING)}
-        onClick={setDestroying}
-      />
-      <ActionButton
         active={activeFigureAction === FigureEditorAction.CUSTOMIZING}
         color={ActionButtonColor.Blue}
         icon={<FaPalette className="action-icon-button" />}
         mouseIcon={activeFigureAction.getMouseIcon(FigureEditorAction.CUSTOMIZING)}
         onClick={setCustomizing}
       />
+      <ActionButton
+        active={activeFigureAction === FigureEditorAction.DESTROYING}
+        color={ActionButtonColor.Red}
+        icon={<FaTrash className="action-icon-button" />}
+        mouseIcon={activeFigureAction.getMouseIcon(FigureEditorAction.DESTROYING)}
+        onClick={setDestroying}
+      />
     </div>
     <div className="editor-sub-menu justify-end">
-      <Link href="/edit-puzzle">
-        <ActionButton
-          active={false}
-          color={ActionButtonColor.Gray}
-          icon={<FaFlagCheckered className="action-icon-button" />}
-          onClick={() => { }}
-        />
+      <Link href="/edit-puzzle" passHref>
+        <div>
+          <ActionButton
+            active={false}
+            color={ActionButtonColor.Gray}
+            icon={<FaFlagCheckered className="action-icon-button" />}
+            onClick={() => { }}
+          />
+        </div>
       </Link>
     </div>
   </aside>;

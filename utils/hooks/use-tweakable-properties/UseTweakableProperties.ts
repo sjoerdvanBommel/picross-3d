@@ -5,7 +5,7 @@ import { Pane, TpChangeEvent } from "tweakpane";
 import { ITweakableProperties } from "./ITweakableProperties";
 import { ITweakParent } from "./ITweakParent";
 
-let pane: ITweakParent;
+let pane: ITweakParent | null;
 
 export const useTweakableProperties = <T extends ITweakableProperties>(properties: T, folderPath?: string, bridged?: boolean): T => {
   const [tweakableProperties, setTweakableProperties] = useState(properties);
@@ -31,7 +31,8 @@ export const useTweakableProperties = <T extends ITweakableProperties>(propertie
 
       if (!parent.tweaks.find(x => x.label === prop)) {
         parent.tweaks.push(parent.addInput(tweakValues, 'value', { ...tweakValues, label: prop }).on('change', (ev: TpChangeEvent) => {
-          setTweakableProperties({ ...tweakableProperties, [prop]: { ...tweakValues, value: ev.value } })
+          tweakValues.onUpdate?.();
+          setTweakableProperties({ ...tweakableProperties, [prop]: { ...tweakValues, value: ev.value } });
         }));
       }
     }
@@ -49,7 +50,7 @@ export const useTweakableProperties = <T extends ITweakableProperties>(propertie
         currentTweak.dispose();
         parent.tweaks = parent.tweaks.filter(x => x.label !== prop);
         if (parent.tweaks.length === 0 && !parent.folders?.length) {
-          parent.parent.folders = parent.parent.folders.filter(x => x.title !== folderPath.split('.')[folderPath.split('.').length - 1]);
+          parent.parent!.folders = parent.parent!.folders!.filter(x => x.title !== folderPath!.split('.')[folderPath!.split('.').length - 1]);
           parent.dispose();
         }
       }
@@ -67,7 +68,7 @@ export const useTweakableProperties = <T extends ITweakableProperties>(propertie
 
   const getOrCreateParent = (): ITweakParent => {
     pane = pane ?? new Pane() as any;
-    let parent: ITweakParent = pane;
+    let parent: ITweakParent = pane!;
 
     if (folderPath) {
       let restOfPath = folderPath;
@@ -83,8 +84,10 @@ export const useTweakableProperties = <T extends ITweakableProperties>(propertie
         }
 
         const newParent = parent.folders.find(x => x.title === currentFolderTitle);
-        newParent.parent = parent;
-        parent = newParent;
+        if (newParent) {
+          newParent.parent = parent;
+          parent = newParent;
+        }
       } while (restOfPath);
     }
 

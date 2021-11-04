@@ -3,4 +3,5 @@ export interface ITweakableProperty {
   min?: number;
   max?: number;
   step?: number;
+  onUpdate?: () => void;
 }

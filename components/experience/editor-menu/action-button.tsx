@@ -1,4 +1,4 @@
-import * as React from "react";
+import Image from 'next/image';
 
 interface IActionButtonProps {
   color: ActionButtonColor,
@@ -18,6 +18,10 @@ export enum ActionButtonColor {
 export const ActionButton = ({ color, icon, mouseIcon, active = false, onClick }: IActionButtonProps) => (
   <button onClick={onClick} className={`bg-gradient-to-br ${color} ${active ? 'opacity-100' : 'opacity-40'} btn h-16 w-16 md:h-24 md:w-24 rounded-xl shadow-xl relative above-canvas`}>
     {icon}
-    {mouseIcon && <img src={`./${mouseIcon}.svg`} alt="Mouse left click" className="absolute bottom-2 right-1 w-6 h-6 hidden md:block" />}
+    {mouseIcon &&
+      <div className="relative left-8 top-7 w-6 h-6 hidden md:block">
+        <Image src={`/${mouseIcon}.svg`} layout='fill' alt={mouseIcon} />
+      </div>
+    }
   </button>
 );

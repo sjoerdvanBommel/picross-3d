@@ -3,13 +3,11 @@ import React from 'react';
 
 const IndexPage = () => {
   return (
-    <>
-      <main className='full-screen-responsive flex'>
-        <div className="hover:pointer above-canvas">
-          <Link href="/edit">Edit</Link>
-        </div>
-      </main>
-    </>
+    <main className='full-screen-responsive flex'>
+      <div className="hover:pointer above-canvas">
+        <Link href="/edit-figure">Edit</Link>
+      </div>
+    </main>
   )
 }
 

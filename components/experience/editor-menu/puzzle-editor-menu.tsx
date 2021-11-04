@@ -30,14 +30,16 @@ const PuzzleEditorMenu = () => {
             onClick={setRemovingNumbers}
           />
         </div>
-        <div className="editor-sub-menu">
-          <Link href="/edit-figure">
-            <ActionButton
-              active={false}
-              color={ActionButtonColor.Gray}
-              icon={<FaCubes className="action-icon-button" />}
-              onClick={() => { }}
-            />
+        <div className="editor-sub-menu justify-end">
+          <Link href="/edit-figure" passHref>
+            <div>
+              <ActionButton
+                active={false}
+                color={ActionButtonColor.Gray}
+                icon={<FaCubes className="action-icon-button" />}
+                onClick={() => { }}
+              />
+            </div>
           </Link>
         </div>
       </aside>

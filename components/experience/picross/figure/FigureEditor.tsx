@@ -1,40 +1,52 @@
 import { FigureEditorAction } from "@components/experience/editor-menu/FigureEditorAction";
 import { useBridgedExperienceContext } from "@components/experience/ExperienceCanvas";
 import { useTweakableProperties } from "@hooks/use-tweakable-properties/UseTweakableProperties";
-import { RoundedBox, useTexture } from "@react-three/drei";
-import { ThreeEvent } from "@react-three/fiber";
-import React from 'react';
-
+import { useTexture } from "@react-three/drei";
+import React, { useState } from 'react';
+import { Color, Intersection, Vector3 } from "three";
+import Block from "../Block";
+import { IBlockProps } from "./IBlockProps";
+import { IIndicatorBlockProps } from "./IIndicatorBlockProps";
 
 const FigureEditor = () => {
   const tweakableProperties = useTweakableProperties({
     color: { value: '#3293df' },
     opacity: { value: 1, min: 0, max: 1, step: 0.01 },
-    radius: { value: 0.1, min: 0, max: 0.5, step: 0.01 },
+    radius: { value: 0.07, min: 0, max: 0.5, step: 0.01 },
+    margin: { value: 0.02, min: 0, max: 0.5, step: 0.01 },
     smoothness: { value: 7, min: 1, max: 10, step: 1 },
     scaleY: { value: 1, min: 0.1, max: 10, step: 0.01 },
     scaleX: { value: 1, min: 0.1, max: 10, step: 0.01 },
     scaleZ: { value: 1, min: 0.1, max: 10, step: 0.01 },
   }, 'Cube', true);
 
+  const [blockProps, setBlockProps] = useState<IBlockProps[]>([{ figurePosition: new Vector3() }, { figurePosition: new Vector3(0, 0, 1) }]);
+  const [indicatorBlockProps, setIndicatorBlockProps] = useState<IIndicatorBlockProps>({ figurePosition: new Vector3(0, 1, 0), visible: true });
   const matcap = useTexture('/default-block-light.jpg');
-  const { activeFigureAction: activeAction } = useBridgedExperienceContext();
+  const { activeFigureAction } = useBridgedExperienceContext();
 
-  const onMouseHoverBlock = (event: ThreeEvent<PointerEvent>) => {
+  const hideIndicatorBlockIfNoHover = () => {
+    document.body.style.cursor = 'move';
+    hideIndicatorBlock();
+  }
+  const hideIndicatorBlock = () => setIndicatorBlockProps({ ...indicatorBlockProps, visible: false });
+  const showIndicatorBlock = () => setIndicatorBlockProps({ ...indicatorBlockProps, visible: true });
+
+  const onHoverBlock = (intersection: Intersection) => {
     document.body.style.cursor = 'pointer';
-    if (activeAction === FigureEditorAction.BUILDING) {
-      console.log('building');
-      // if (!this.indicatorBlock.visible) {
-      //   this.indicatorBlock.visible = true;
-      // }
-      // const newBlockPosition = this.getNewPicrossObjectPosition(intersect);
-      // if (newBlockPosition && !this.indicatorBlock.figurePosition.equals(newBlockPosition) && !this.figure.getBlock(newBlockPosition)) {
-      //   this.indicatorBlock.figurePosition = newBlockPosition;
-      // }
+    if (activeFigureAction === FigureEditorAction.BUILDING) {
+      if (!indicatorBlockProps.visible) {
+        showIndicatorBlock();
+      }
+      const newBlockPosition = getNewPicrossObjectPosition(intersection);
+      if (!indicatorBlockProps.figurePosition.equals(newBlockPosition)) {
+        setIndicatorBlockProps({ ...indicatorBlockProps, figurePosition: newBlockPosition });
+      }
     }
-    else if (activeAction === FigureEditorAction.DESTROYING) {
-      console.log('destroying');
-
+    else if (activeFigureAction === FigureEditorAction.DESTROYING) {
+      if (indicatorBlockProps.visible) {
+        hideIndicatorBlock();
+      }
       // const pointedBlock = this.figure.getBlock(intersect.object);
       // if (pointedBlock) {
       //   this.figure.getBlocks().forEach(block => block.setOpacity(1));
@@ -45,20 +57,50 @@ const FigureEditor = () => {
     }
   };
 
+  const getNewPicrossObjectPosition = (intersection: Intersection): Vector3 => {
+    const pointedBlockPosition = intersection.object.userData.figurePosition;
+    const newBlockDirection = new Vector3(
+      Math.round(intersection.face!.normal.x + (intersection.face!.normal.x > 0 ? -0.2 : 0.2)),
+      Math.round(intersection.face!.normal.y + (intersection.face!.normal.y > 0 ? -0.2 : 0.2)),
+      Math.round(intersection.face!.normal.z + (intersection.face!.normal.z > 0 ? -0.2 : 0.2))
+    );
+    return pointedBlockPosition.clone().add(newBlockDirection);
+  }
+
   return (
-    <RoundedBox
-      args={[tweakableProperties.scaleX.value, tweakableProperties.scaleY.value, tweakableProperties.scaleZ.value]}
-      radius={tweakableProperties.radius.value}
-      smoothness={tweakableProperties.smoothness.value}
-      onPointerMove={onMouseHoverBlock}
-    >
-      <meshMatcapMaterial
+    <>
+      {blockProps.map((blockProp, i) =>
+        <Block
+          key={i}
+          scaleX={tweakableProperties.scaleX.value}
+          scaleY={tweakableProperties.scaleY.value}
+          scaleZ={tweakableProperties.scaleZ.value}
+          margin={tweakableProperties.margin.value}
+          radius={tweakableProperties.radius.value}
+          smoothness={tweakableProperties.smoothness.value}
+          color={new Color(tweakableProperties.color.value)}
+          opacity={tweakableProperties.opacity.value}
+          matcap={matcap}
+          figurePosition={blockProp.figurePosition}
+          onHover={onHoverBlock}
+          onLeave={hideIndicatorBlockIfNoHover}
+        />
+      )}
+      <Block
+        scaleX={tweakableProperties.scaleX.value}
+        scaleY={tweakableProperties.scaleY.value}
+        scaleZ={tweakableProperties.scaleZ.value}
+        margin={tweakableProperties.margin.value}
+        radius={tweakableProperties.radius.value}
+        smoothness={tweakableProperties.smoothness.value}
+        color={new Color(tweakableProperties.color.value)}
+        opacity={0.3}
         matcap={matcap}
-        color={tweakableProperties.color.value}
-        transparent={true}
-        opacity={tweakableProperties.opacity.value}
+        figurePosition={indicatorBlockProps.figurePosition}
+        visible={indicatorBlockProps.visible}
+        isSelectable={false}
       />
-    </RoundedBox>
+    </>
   )
 }
 
@@ -81,14 +123,6 @@ export default FigureEditor
 
 //   private get figure(): Figure {
 //     return this.picrossObject as Figure;
-//   }
-
-//   public onNoMouseHoverBlock = () => {
-//     document.body.style.cursor = 'move';
-//     if (this.activeAction === FigureEditorAction.BUILDING && this.indicatorBlock.visible) {
-//       this.indicatorBlock.visible = false;
-//     }
-//     this.figure.getBlocks().forEach(block => block.setOpacity(1));
 //   }
 
 //   public replaceFigure = (figure: Figure) => {

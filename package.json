@@ -8,14 +8,14 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "@react-three/drei": "^7.18.0",
+    "@react-three/drei": "^7.19.6",
     "@react-three/fiber": "latest",
-    "daisyui": "^1.16.0",
-    "next": "^12.0.1",
+    "daisyui": "^1.16.1",
+    "next": "^12.0.2",
     "react": "latest",
     "react-dom": "latest",
     "react-icons": "^4.3.1",
-    "three": "latest",
+    "three": "^0.134.0",
     "tweakpane": "latest",
     "use-tweaks": "latest"
   },
@@ -24,12 +24,12 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/three": "latest",
-    "autoprefixer": "latest",
+    "autoprefixer": "^10.4.0",
     "eslint": "8.1.0",
     "eslint-config-next": "12.0.1",
     "postcss": "latest",
     "postcss-preset-env": "latest",
-    "tailwindcss": "latest",
+    "tailwindcss": "^2.2.19",
     "typescript": "latest"
   }
 }
