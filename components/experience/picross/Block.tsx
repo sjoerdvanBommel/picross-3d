@@ -1,4 +1,5 @@
 import { RoundedBox } from '@react-three/drei'
+import { ThreeEvent } from '@react-three/fiber'
 import React, { useEffect, useRef } from 'react'
 import { Color, Intersection, Mesh, Texture, Vector3 } from 'three'
 
@@ -13,13 +14,15 @@ type BlockProps = {
   opacity: number,
   matcap: Texture,
   figurePosition: Vector3,
+  onEnter?: (intersections: Intersection[]) => void,
   onHover?: (intersection: Intersection) => void,
-  onLeave?: () => void,
+  onLeave?: (figurePosition: Vector3, event: ThreeEvent<PointerEvent>) => void,
+  onClick?: (intersection: Intersection) => void,
   visible?: boolean,
   isSelectable?: boolean
 }
 
-const Block = ({ scaleX, scaleY, scaleZ, margin, radius, smoothness, color, opacity, matcap, figurePosition, onHover, onLeave, visible = true, isSelectable = true }: BlockProps) => {
+const Block = ({ scaleX, scaleY, scaleZ, margin, radius, smoothness, color, opacity, matcap, figurePosition, onEnter, onHover, onLeave, onClick, visible = true, isSelectable = true }: BlockProps) => {
   const ref = useRef<Mesh>(null!);
 
   useEffect(() => {
@@ -40,6 +43,9 @@ const Block = ({ scaleX, scaleY, scaleZ, margin, radius, smoothness, color, opac
       position={toRealPosition(figurePosition)}
       radius={radius}
       smoothness={smoothness}
+      onPointerEnter={(event) => {
+        onEnter?.(event.intersections);
+      }}
       onPointerMove={(event) => {
         const selectableObjectIntersections = event.intersections.filter(x => x.object.userData.isSelectable);
         if (selectableObjectIntersections.length > 0 && ref.current === selectableObjectIntersections[0].eventObject) {
@@ -47,9 +53,12 @@ const Block = ({ scaleX, scaleY, scaleZ, margin, radius, smoothness, color, opac
         }
       }}
       onPointerLeave={(event) => {
+        onLeave?.(figurePosition, event);
+      }}
+      onClick={(event) => {
         const selectableObjectIntersections = event.intersections.filter(x => x.object.userData.isSelectable);
-        if (selectableObjectIntersections.length === 0) {
-          onLeave?.();
+        if (selectableObjectIntersections.length > 0 && ref.current === selectableObjectIntersections[0].eventObject && event.delta < 10) {
+          onClick?.(selectableObjectIntersections[0]);
         }
       }}
       visible={visible}
