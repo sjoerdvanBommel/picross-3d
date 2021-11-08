@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { EditingType } from "@hooks/states/UseEditingType";
 import React from "react";
 import { FaCubes, FaEraser, FaPenAlt } from "react-icons/fa";
 import { useExperienceContext } from "../ExperienceProvider";
@@ -6,7 +6,7 @@ import { ActionButton, ActionButtonColor } from "./action-button";
 import { PuzzleEditorAction } from "./PuzzleEditorAction";
 
 const PuzzleEditorMenu = () => {
-  const { activePuzzleAction, setActivePuzzleAction } = useExperienceContext();
+  const { activePuzzleAction, setActivePuzzleAction, setEditingType } = useExperienceContext();
 
   const setAddingNumbers = () => setActivePuzzleAction(PuzzleEditorAction.ADDING_NUMBERS);
   const setRemovingNumbers = () => setActivePuzzleAction(PuzzleEditorAction.REMOVING_NUMBERS);
@@ -31,16 +31,12 @@ const PuzzleEditorMenu = () => {
           />
         </div>
         <div className="editor-sub-menu justify-end">
-          <Link href="/edit-figure" passHref>
-            <div>
-              <ActionButton
-                active={false}
-                color={ActionButtonColor.Gray}
-                icon={<FaCubes className="action-icon-button" />}
-                onClick={() => { }}
-              />
-            </div>
-          </Link>
+          <ActionButton
+            active={false}
+            color={ActionButtonColor.Gray}
+            icon={<FaCubes className="action-icon-button" />}
+            onClick={() => setEditingType(EditingType.Constructing)}
+          />
         </div>
       </aside>
     </>

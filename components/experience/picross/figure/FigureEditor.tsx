@@ -1,6 +1,6 @@
 import { FigureEditorAction } from "@components/experience/editor-menu/FigureEditorAction";
-import { useBridgedExperienceContext } from "@components/experience/ExperienceCanvas";
-import { useBlockProps } from "@hooks/tweakable-properties/UseBlockProps";
+import { useEditorContext } from "@components/experience/ExperienceCanvasContent";
+import { useExperienceContext } from "@components/experience/ExperienceProvider";
 import { ThreeEvent } from "@react-three/fiber";
 import React, { useState } from 'react';
 import { Color, Intersection, Vector3 } from "three";
@@ -9,9 +9,9 @@ import { IBlockProps } from "./IBlockProps";
 import { IIndicatorBlockProps } from "./IIndicatorBlockProps";
 
 const FigureEditor = () => {
-  const { staticProperties, blocksProps, setBlocksProps, matcap } = useBlockProps();
+  const { staticBlockProps, blocksProps, setBlocksProps, matcap } = useEditorContext();
   const [indicatorBlockProps, setIndicatorBlockProps] = useState<IIndicatorBlockProps>({ figurePosition: new Vector3(0, 1, 0), visible: false, opacity: .3 });
-  const { activeFigureAction } = useBridgedExperienceContext();
+  const { activeFigureAction } = useExperienceContext();
 
   const onEnterBlock = (intersections: Intersection[]) => {
     if (activeFigureAction === FigureEditorAction.DESTROYING) {
@@ -106,8 +106,8 @@ const FigureEditor = () => {
       {blocksProps.map(blockProp =>
         <Block
           key={`${blockProp.figurePosition.x},${blockProp.figurePosition.y},${blockProp.figurePosition.z}`}
-          {...staticProperties}
-          color={new Color(staticProperties.color)}
+          {...staticBlockProps}
+          color={new Color(staticBlockProps.color)}
           opacity={blockProp.opacity}
           matcap={matcap}
           figurePosition={blockProp.figurePosition}
@@ -118,8 +118,8 @@ const FigureEditor = () => {
         />
       )}
       <Block
-        {...staticProperties}
-        color={new Color(staticProperties.color)}
+        {...staticBlockProps}
+        color={new Color(staticBlockProps.color)}
         opacity={indicatorBlockProps.opacity}
         matcap={matcap}
         figurePosition={indicatorBlockProps.figurePosition}

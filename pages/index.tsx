@@ -5,7 +5,7 @@ const IndexPage = () => {
   return (
     <main className='full-screen-responsive flex'>
       <div className="hover:pointer above-canvas">
-        <Link href="/edit-figure">Edit</Link>
+        <Link href="/create-figure">Create puzzle</Link>
       </div>
     </main>
   )

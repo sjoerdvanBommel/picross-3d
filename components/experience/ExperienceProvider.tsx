@@ -3,8 +3,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { FigureEditorAction } from './editor-menu/FigureEditorAction';
 import { PuzzleEditorAction } from './editor-menu/PuzzleEditorAction';
 
-export interface IExperienceContextProps {
-  debug: boolean,
+interface IExperienceContextProps {
+  isDebugMode: boolean,
   setDebug: (_: boolean) => void,
   activeFigureAction: FigureEditorAction,
   setActiveFigureAction: (_: FigureEditorAction) => void,
@@ -14,8 +14,8 @@ export interface IExperienceContextProps {
   setEditingType: (_: EditingType) => void
 }
 
-export const defaultValues = {
-  debug: false,
+const defaultValues = {
+  isDebugMode: false,
   setDebug: (_: boolean) => { },
   activeFigureAction: FigureEditorAction.BUILDING,
   setActiveFigureAction: (_: FigureEditorAction) => { },
@@ -25,8 +25,7 @@ export const defaultValues = {
   setEditingType: (_: EditingType) => { }
 }
 
-const ExperienceContext = createContext<IExperienceContextProps>(defaultValues);
-
+export const ExperienceContext = createContext<IExperienceContextProps>(defaultValues);
 export const useExperienceContext = () => useContext(ExperienceContext);
 
 type Props = {
@@ -48,7 +47,7 @@ const ExperienceProvider = ({ children }: Props) => {
   }, []);
 
   return (
-    <ExperienceContext.Provider value={{ debug, setDebug, activeFigureAction: activeFigureAction, setActiveFigureAction, activePuzzleAction, setActivePuzzleAction, editingType, setEditingType }}>
+    <ExperienceContext.Provider value={{ isDebugMode: debug, setDebug, activeFigureAction: activeFigureAction, setActiveFigureAction, activePuzzleAction, setActivePuzzleAction, editingType, setEditingType }}>
       {children}
     </ExperienceContext.Provider>
   )

@@ -1,13 +1,11 @@
+import { useContextBridge } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import React, { createContext, Suspense, useContext, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import ExperienceCanvasContent from "./ExperienceCanvasContent";
-import { defaultValues, IExperienceContextProps, useExperienceContext } from "./ExperienceProvider";
+import { ExperienceContext, useExperienceContext } from "./ExperienceProvider";
 import LoadingOverlay from "./LoadingOverlay";
 
-const BridgedContext = createContext<IExperienceContextProps>(defaultValues);
-export const useBridgedExperienceContext = () => useContext(BridgedContext);
-
-const CanvasFallback = ({ onFinish }) => {
+const CanvasFallback = ({ onFinish }: any) => {
   useEffect(() => {
     return () => {
       onFinish();
@@ -21,6 +19,7 @@ const ExperienceCanvas = () => {
   const experienceContext = useExperienceContext();
   const [experienceLoaded, setExperienceLoaded] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const ContextBridge = useContextBridge(ExperienceContext);
 
   const onLoadExperience = () => {
     setTimeout(() => {
@@ -31,17 +30,16 @@ const ExperienceCanvas = () => {
 
   return (
     <>
-      <p>{JSON.stringify(experienceContext)}</p>
       <div className={`full-screen-absolute ${experienceLoaded ? 'z-[2]' : ''}`}>
         <Canvas>
           <Suspense fallback={<CanvasFallback onFinish={onLoadExperience} />}>
-            <BridgedContext.Provider value={experienceContext}>
+            <ContextBridge>
               <ExperienceCanvasContent />
-            </BridgedContext.Provider>
+            </ContextBridge>
           </Suspense>
         </Canvas>
       </div>
-      {!experienceContext.debug &&
+      {!experienceContext.isDebugMode &&
         <div className={`full-screen-absolute ${experienceLoaded ? 'z-[-1]' : 'z-50'}`}>
           {
             !experienceLoaded &&

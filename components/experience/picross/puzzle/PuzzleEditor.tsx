@@ -1,17 +1,17 @@
-import { useBlockProps } from '@hooks/tweakable-properties/UseBlockProps';
+import { useEditorContext } from '@components/experience/ExperienceCanvasContent';
 import React from 'react';
 import { Color } from 'three';
 import Block from '../Block';
 
 const PuzzleEditor = () => {
-  const { staticProperties, blocksProps, matcap } = useBlockProps();
+  const { staticBlockProps, blocksProps, matcap } = useEditorContext();
 
   return (
     <>
       {blocksProps.map(blockProps => (
         <Block
           key={`${blockProps.figurePosition.x},${blockProps.figurePosition.y},${blockProps.figurePosition.z}`}
-          {...staticProperties}
+          {...staticBlockProps}
           color={new Color('#ff0000')}
           opacity={blockProps.opacity}
           matcap={matcap}

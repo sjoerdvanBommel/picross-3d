@@ -3,9 +3,20 @@ import { useTweakableProperties } from "@hooks/tweakable-properties/UseTweakable
 import { useTexture } from "@react-three/drei";
 import { useState } from "react";
 import { Vector3 } from "three";
+import { ITweakableProperty } from "./ITweakableProperty";
+
+export type IStaticBlockProps = {
+  color: ITweakableProperty,
+  radius: ITweakableProperty,
+  margin: ITweakableProperty,
+  smoothness: ITweakableProperty,
+  scaleY: ITweakableProperty,
+  scaleX: ITweakableProperty,
+  scaleZ: ITweakableProperty,
+}
 
 export const useBlockProps = () => {
-  const staticProperties = useTweakableProperties({
+  const staticBlockProps = useTweakableProperties<IStaticBlockProps>({
     color: { value: '#3293df' },
     radius: { value: 0.07, min: 0, max: 0.5, step: 0.01 },
     margin: { value: 0.02, min: 0, max: 0.5, step: 0.01 },
@@ -13,14 +24,13 @@ export const useBlockProps = () => {
     scaleY: { value: 1, min: 0.1, max: 10, step: 0.01 },
     scaleX: { value: 1, min: 0.1, max: 10, step: 0.01 },
     scaleZ: { value: 1, min: 0.1, max: 10, step: 0.01 },
-  }, 'Block', true);
+  }, 'Block');
   const [blocksProps, setBlocksProps] = useState<IBlockProps[]>(
     [
-      { figurePosition: new Vector3(0, 0, 0), opacity: 1 },
-      { figurePosition: new Vector3(0, 0, 2), opacity: 1 }
+      { figurePosition: new Vector3(0, 0, 0), opacity: 1 }
     ]
   );
   const matcap = useTexture('/default-block-light.jpg');
 
-  return { staticProperties, blocksProps, setBlocksProps, matcap };
+  return { staticBlockProps, blocksProps, setBlocksProps, matcap };
 }

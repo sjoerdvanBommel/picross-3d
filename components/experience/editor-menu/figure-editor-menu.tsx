@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { EditingType } from "@hooks/states/UseEditingType";
 import React from "react";
 import { FaFlagCheckered, FaHammer, FaPalette, FaTrash } from "react-icons/fa";
 import { useExperienceContext } from "../ExperienceProvider";
@@ -6,7 +6,7 @@ import { ActionButton, ActionButtonColor } from "./action-button";
 import { FigureEditorAction } from "./FigureEditorAction";
 
 const FigureEditorMenu = () => {
-  const { activeFigureAction, setActiveFigureAction } = useExperienceContext();
+  const { activeFigureAction, setActiveFigureAction, setEditingType } = useExperienceContext();
 
   const setBuilding = () => setActiveFigureAction(FigureEditorAction.BUILDING);
   const setDestroying = () => setActiveFigureAction(FigureEditorAction.DESTROYING);
@@ -37,16 +37,12 @@ const FigureEditorMenu = () => {
       />
     </div>
     <div className="editor-sub-menu justify-end">
-      <Link href="/edit-puzzle" passHref>
-        <div>
-          <ActionButton
-            active={false}
-            color={ActionButtonColor.Gray}
-            icon={<FaFlagCheckered className="action-icon-button" />}
-            onClick={() => { }}
-          />
-        </div>
-      </Link>
+      <ActionButton
+        active={false}
+        color={ActionButtonColor.Gray}
+        icon={<FaFlagCheckered className="action-icon-button" />}
+        onClick={() => setEditingType(EditingType.Numbering)}
+      />
     </div>
   </aside>;
 };

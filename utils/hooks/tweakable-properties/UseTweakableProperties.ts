@@ -1,25 +1,23 @@
-import { useBridgedExperienceContext } from "@components/experience/ExperienceCanvas";
 import { useExperienceContext } from "@components/experience/ExperienceProvider";
 import { useEffect, useState } from "react";
 import { Pane, TpChangeEvent } from "tweakpane";
-import { ITweakableProperties } from "./ITweakableProperties";
+import { ITweakableProperty } from "./ITweakableProperty";
 import { ITweakParent } from "./ITweakParent";
 
 let pane: ITweakParent | null;
 
-type Values<T> = {
+export type Values<T> = {
   [value in keyof T]: any
 }
 
-export const useTweakableProperties = <T extends ITweakableProperties>(properties: T, folderPath?: string, bridged?: boolean): Values<T> => {
+type TweakableProperties<T> = {
+  [value in keyof T]: ITweakableProperty
+}
+
+export const useTweakableProperties = <T extends TweakableProperties<T>>(properties: T, folderPath?: string): Values<T> => {
   const [tweakableProperties, setTweakableProperties] = useState(properties);
 
-  let debug: boolean;
-  if (bridged === true) {
-    debug = useBridgedExperienceContext().debug;
-  } else {
-    debug = useExperienceContext().debug;
-  }
+  let debug = useExperienceContext().isDebugMode;
 
   useEffect(() => {
     if (!debug) {
