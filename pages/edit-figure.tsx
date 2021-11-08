@@ -1,8 +1,16 @@
 import FigureEditorMenu from '@components/experience/editor-menu/figure-editor-menu';
+import { useExperienceContext } from '@components/experience/ExperienceProvider';
 import Sidebar from '@components/Sidebar';
-import React from 'react';
+import { EditingType } from '@hooks/states/UseEditingType';
+import React, { useEffect } from 'react';
 
-const EditPage = () => {
+const EditFigurePage = () => {
+  const { setEditingType } = useExperienceContext();
+
+  useEffect(() => {
+    setEditingType(EditingType.Constructing);
+  }, [])
+
   return (
     <>
       <Sidebar />
@@ -13,4 +21,4 @@ const EditPage = () => {
   );
 }
 
-export default EditPage
+export default EditFigurePage

@@ -7,7 +7,11 @@ import { ITweakParent } from "./ITweakParent";
 
 let pane: ITweakParent | null;
 
-export const useTweakableProperties = <T extends ITweakableProperties>(properties: T, folderPath?: string, bridged?: boolean): T => {
+type Values<T> = {
+  [value in keyof T]: any
+}
+
+export const useTweakableProperties = <T extends ITweakableProperties>(properties: T, folderPath?: string, bridged?: boolean): Values<T> => {
   const [tweakableProperties, setTweakableProperties] = useState(properties);
 
   let debug: boolean;
@@ -94,5 +98,13 @@ export const useTweakableProperties = <T extends ITweakableProperties>(propertie
     return parent;
   };
 
-  return tweakableProperties;
+  const flattenValues = () => {
+    const res: Values<T> = {} as any;
+    for (let key in tweakableProperties) {
+      res[key] = tweakableProperties[key].value;
+    }
+    return res;
+  }
+
+  return flattenValues();
 }

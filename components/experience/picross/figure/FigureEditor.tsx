@@ -1,7 +1,6 @@
 import { FigureEditorAction } from "@components/experience/editor-menu/FigureEditorAction";
 import { useBridgedExperienceContext } from "@components/experience/ExperienceCanvas";
-import { useTweakableProperties } from "@hooks/use-tweakable-properties/UseTweakableProperties";
-import { useTexture } from "@react-three/drei";
+import { useBlockProps } from "@hooks/tweakable-properties/UseBlockProps";
 import { ThreeEvent } from "@react-three/fiber";
 import React, { useState } from 'react';
 import { Color, Intersection, Vector3 } from "three";
@@ -10,19 +9,8 @@ import { IBlockProps } from "./IBlockProps";
 import { IIndicatorBlockProps } from "./IIndicatorBlockProps";
 
 const FigureEditor = () => {
-  const tweakableProperties = useTweakableProperties({
-    color: { value: '#3293df' },
-    radius: { value: 0.07, min: 0, max: 0.5, step: 0.01 },
-    margin: { value: 0.02, min: 0, max: 0.5, step: 0.01 },
-    smoothness: { value: 7, min: 1, max: 10, step: 1 },
-    scaleY: { value: 1, min: 0.1, max: 10, step: 0.01 },
-    scaleX: { value: 1, min: 0.1, max: 10, step: 0.01 },
-    scaleZ: { value: 1, min: 0.1, max: 10, step: 0.01 },
-  }, 'Cube', true);
-
-  const [blocksProps, setBlocksProps] = useState<IBlockProps[]>([{ figurePosition: new Vector3(), opacity: 1 }, { figurePosition: new Vector3(0, 0, 2), opacity: 1 }]);
-  const [indicatorBlockProps, setIndicatorBlockProps] = useState<IIndicatorBlockProps>({ figurePosition: new Vector3(0, 1, 0), visible: true, opacity: .3 });
-  const matcap = useTexture('/default-block-light.jpg');
+  const { staticProperties, blocksProps, setBlocksProps, matcap } = useBlockProps();
+  const [indicatorBlockProps, setIndicatorBlockProps] = useState<IIndicatorBlockProps>({ figurePosition: new Vector3(0, 1, 0), visible: false, opacity: .3 });
   const { activeFigureAction } = useBridgedExperienceContext();
 
   const onEnterBlock = (intersections: Intersection[]) => {
@@ -69,7 +57,9 @@ const FigureEditor = () => {
   const onClickBlock = (intersection: Intersection) => {
     if (activeFigureAction === FigureEditorAction.BUILDING) {
       const newBlockPosition = getNewPicrossFigurePosition(intersection);
-      setBlocksProps([...blocksProps, { figurePosition: newBlockPosition, opacity: 1 }]);
+      if (!blocksProps.find(x => x.figurePosition.equals(newBlockPosition))) {
+        setBlocksProps([...blocksProps, { figurePosition: newBlockPosition, opacity: 1 }]);
+      }
     }
     else if (activeFigureAction === FigureEditorAction.DESTROYING && blocksProps.length > 1) {
       setBlocksProps([...blocksProps].filter(x => !x.figurePosition.equals(intersection.object.userData.figurePosition)));
@@ -116,13 +106,8 @@ const FigureEditor = () => {
       {blocksProps.map(blockProp =>
         <Block
           key={`${blockProp.figurePosition.x},${blockProp.figurePosition.y},${blockProp.figurePosition.z}`}
-          scaleX={tweakableProperties.scaleX.value}
-          scaleY={tweakableProperties.scaleY.value}
-          scaleZ={tweakableProperties.scaleZ.value}
-          margin={tweakableProperties.margin.value}
-          radius={tweakableProperties.radius.value}
-          smoothness={tweakableProperties.smoothness.value}
-          color={new Color(tweakableProperties.color.value)}
+          {...staticProperties}
+          color={new Color(staticProperties.color)}
           opacity={blockProp.opacity}
           matcap={matcap}
           figurePosition={blockProp.figurePosition}
@@ -133,13 +118,8 @@ const FigureEditor = () => {
         />
       )}
       <Block
-        scaleX={tweakableProperties.scaleX.value}
-        scaleY={tweakableProperties.scaleY.value}
-        scaleZ={tweakableProperties.scaleZ.value}
-        margin={tweakableProperties.margin.value}
-        radius={tweakableProperties.radius.value}
-        smoothness={tweakableProperties.smoothness.value}
-        color={new Color(tweakableProperties.color.value)}
+        {...staticProperties}
+        color={new Color(staticProperties.color)}
         opacity={indicatorBlockProps.opacity}
         matcap={matcap}
         figurePosition={indicatorBlockProps.figurePosition}

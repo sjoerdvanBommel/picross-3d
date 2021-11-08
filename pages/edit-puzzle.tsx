@@ -1,8 +1,16 @@
 import PuzzleEditorMenu from '@components/experience/editor-menu/puzzle-editor-menu';
+import { useExperienceContext } from '@components/experience/ExperienceProvider';
 import Sidebar from '@components/Sidebar';
-import React from 'react';
+import { EditingType } from '@hooks/states/UseEditingType';
+import React, { useEffect } from 'react';
 
-const EditPage = () => {
+const EditPuzzlePage = () => {
+  const { setEditingType } = useExperienceContext();
+
+  useEffect(() => {
+    setEditingType(EditingType.Numbering);
+  }, [])
+
   return (
     <>
       <Sidebar />
@@ -13,4 +21,4 @@ const EditPage = () => {
   );
 }
 
-export default EditPage
+export default EditPuzzlePage

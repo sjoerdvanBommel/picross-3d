@@ -31,6 +31,7 @@ const ExperienceCanvas = () => {
 
   return (
     <>
+      <p>{JSON.stringify(experienceContext)}</p>
       <div className={`full-screen-absolute ${experienceLoaded ? 'z-[2]' : ''}`}>
         <Canvas>
           <Suspense fallback={<CanvasFallback onFinish={onLoadExperience} />}>
