@@ -1,4 +1,5 @@
 import { EditingType } from "@hooks/states/UseEditingType";
+import Link from "next/link";
 import React from "react";
 import { FaFlagCheckered, FaHammer, FaPalette, FaTrash } from "react-icons/fa";
 import { useExperienceContext } from "../ExperienceProvider";
@@ -37,12 +38,16 @@ const FigureEditorMenu = () => {
       />
     </div>
     <div className="editor-sub-menu justify-end">
-      <ActionButton
-        active={false}
-        color={ActionButtonColor.Gray}
-        icon={<FaFlagCheckered className="action-icon-button" />}
-        onClick={() => setEditingType(EditingType.Numbering)}
-      />
+      <Link href="/create-puzzle" passHref>
+        <div>
+          <ActionButton
+            active={false}
+            color={ActionButtonColor.Gray}
+            icon={<FaFlagCheckered className="action-icon-button" />}
+            onClick={() => setEditingType(EditingType.Numbering)}
+          />
+        </div>
+      </Link>
     </div>
   </aside>;
 };

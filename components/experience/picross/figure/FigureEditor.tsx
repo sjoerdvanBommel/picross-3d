@@ -50,7 +50,7 @@ const FigureEditor = () => {
   }
   const onLeaveBlock = (figurePosition: Vector3, event: ThreeEvent<PointerEvent>) => {
     setBlockOpacity(figurePosition, 1);
-    if (event.intersections.length === 0) {
+    if (event.intersections.filter(x => x.object.userData.isSelectable).length === 0) {
       onHoverNoBlock();
     }
   }

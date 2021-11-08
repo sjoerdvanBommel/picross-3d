@@ -1,4 +1,5 @@
 import { EditingType } from "@hooks/states/UseEditingType";
+import Link from "next/link";
 import React from "react";
 import { FaCubes, FaEraser, FaPenAlt } from "react-icons/fa";
 import { useExperienceContext } from "../ExperienceProvider";
@@ -31,12 +32,16 @@ const PuzzleEditorMenu = () => {
           />
         </div>
         <div className="editor-sub-menu justify-end">
-          <ActionButton
-            active={false}
-            color={ActionButtonColor.Gray}
-            icon={<FaCubes className="action-icon-button" />}
-            onClick={() => setEditingType(EditingType.Constructing)}
-          />
+          <Link href="/create-figure" passHref>
+            <div>
+              <ActionButton
+                active={false}
+                color={ActionButtonColor.Gray}
+                icon={<FaCubes className="action-icon-button" />}
+                onClick={() => setEditingType(EditingType.Constructing)}
+              />
+            </div>
+          </Link>
         </div>
       </aside>
     </>
