@@ -1,6 +1,7 @@
 import { useContextBridge } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { Suspense, useEffect, useState } from "react";
+import { Intersection, Object3D } from "three";
 import ExperienceCanvasContent from "./ExperienceCanvasContent";
 import { ExperienceContext, useExperienceContext } from "./ExperienceProvider";
 import LoadingOverlay from "./LoadingOverlay";
@@ -28,10 +29,15 @@ const ExperienceCanvas = () => {
     }, 2000);
   }
 
+  const intersectionsFilter: any = (intersections: Intersection<Object3D<Event>>[]) => {
+    return intersections ? [intersections.filter(x => x.object?.userData?.isSelectable)[0]].filter(x => x) : intersections
+  }
+
   return (
     <>
       <div className={`full-screen-absolute ${experienceLoaded ? 'z-[2]' : ''}`}>
-        <Canvas>
+        <Canvas raycaster={{ filter: intersectionsFilter }}>
+          {/* <axesHelper args={[10]} /> */}
           <Suspense fallback={<CanvasFallback onFinish={onLoadExperience} />}>
             <ContextBridge>
               <ExperienceCanvasContent />

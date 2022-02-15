@@ -17,7 +17,7 @@ type BlockProps = {
   onEnter?: (intersections: Intersection[]) => void,
   onHover?: (intersection: Intersection) => void,
   onLeave?: (figurePosition: Vector3, event: ThreeEvent<PointerEvent>) => void,
-  onClick?: (intersection: Intersection) => void,
+  onClick?: (event: ThreeEvent<MouseEvent>) => void,
   visible?: boolean,
   isSelectable?: boolean
 }
@@ -55,10 +55,10 @@ const Block = ({ scaleX, scaleY, scaleZ, margin, radius, smoothness, color, opac
       onPointerLeave={(event) => {
         onLeave?.(figurePosition, event);
       }}
-      onClick={(event) => {
+      onPointerDown={(event) => {
         const selectableObjectIntersections = event.intersections.filter(x => x.object.userData.isSelectable);
         if (selectableObjectIntersections.length > 0 && ref.current === selectableObjectIntersections[0].eventObject && event.delta < 10) {
-          onClick?.(selectableObjectIntersections[0]);
+          onClick?.(event);
         }
       }}
       visible={visible}

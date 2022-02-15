@@ -9,8 +9,10 @@ import { IBlockProps } from "./IBlockProps";
 import { IIndicatorBlockProps } from "./IIndicatorBlockProps";
 
 const FigureEditor = () => {
+  const indicatorOpacity = .6;
+
   const { staticBlockProps, blocksProps, setBlocksProps, matcap } = useEditorContext();
-  const [indicatorBlockProps, setIndicatorBlockProps] = useState<IIndicatorBlockProps>({ figurePosition: new Vector3(0, 1, 0), visible: false, opacity: .3 });
+  const [indicatorBlockProps, setIndicatorBlockProps] = useState<IIndicatorBlockProps>({ figurePosition: new Vector3(0, 1, 0), visible: false, opacity: indicatorOpacity });
   const { activeFigureAction } = useExperienceContext();
 
   const onEnterBlock = (intersections: Intersection[]) => {
@@ -18,9 +20,10 @@ const FigureEditor = () => {
       intersections.forEach(intersection => {
         setBlockOpacity(intersection.object.userData.figurePosition, 1);
       });
-      setBlockOpacity(intersections[0].object.userData.figurePosition, .3);
+      setBlockOpacity(intersections[0].object.userData.figurePosition, indicatorOpacity);
     }
   }
+
   const onHoverBlock = (intersection: Intersection) => {
     document.body.style.cursor = 'pointer';
 
@@ -44,25 +47,35 @@ const FigureEditor = () => {
       }
     }
   };
+
   const onHoverNoBlock = () => {
     hideIndicatorBlock();
     document.body.style.cursor = 'move';
   }
+
   const onLeaveBlock = (figurePosition: Vector3, event: ThreeEvent<PointerEvent>) => {
     setBlockOpacity(figurePosition, 1);
     if (event.intersections.filter(x => x.object.userData.isSelectable).length === 0) {
       onHoverNoBlock();
     }
   }
-  const onClickBlock = (intersection: Intersection) => {
-    if (activeFigureAction === FigureEditorAction.BUILDING) {
+
+  const onClickBlock = (event: ThreeEvent<MouseEvent>) => {
+    const intersection = event.intersections[0];
+
+    if (
+      activeFigureAction === FigureEditorAction.BUILDING && event.button === 0 ||
+      activeFigureAction === FigureEditorAction.DESTROYING && event.button === 2) {
       const newBlockPosition = getNewPicrossFigurePosition(intersection);
       if (!blocksProps.find(x => x.figurePosition.equals(newBlockPosition))) {
         setBlocksProps([...blocksProps, { figurePosition: newBlockPosition, opacity: 1 }]);
       }
     }
-    else if (activeFigureAction === FigureEditorAction.DESTROYING && blocksProps.length > 1) {
+    else if (
+      activeFigureAction === FigureEditorAction.BUILDING && blocksProps.length > 1 && event.button === 2 ||
+      activeFigureAction === FigureEditorAction.DESTROYING && blocksProps.length > 1 && event.button === 0) {
       setBlocksProps([...blocksProps].filter(x => !x.figurePosition.equals(intersection.object.userData.figurePosition)));
+      hideIndicatorBlock();
     }
   }
 
